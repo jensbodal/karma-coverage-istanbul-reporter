@@ -71,6 +71,16 @@ function CoverageIstanbulReporter(baseReporterDecorator, logger, config) {
         ) {
           log.debug(`File [${filename}] ignored, nothing could be mapped`);
         } else {
+
+          for (var key in fileCoverage.fnMap) {
+            if (fileCoverage.fnMap.hasOwnProperty(key)) {
+              if (!fileCoverage.fnMap[key].decl && fileCoverage.fnMap[key].loc) {
+                // karma-coverage 'in-memory' (or for all report types?) doesn't create .decl mapping needed by istanbul-reports
+                fileCoverage.fnMap[key].decl = fileCoverage.fnMap[key].loc;
+              }
+            }
+          }
+
           coverageMap.addFileCoverage(fileCoverage);
         }
       });
